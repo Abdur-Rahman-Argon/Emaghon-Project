@@ -1,50 +1,59 @@
-import React from "react";
-import "./App.css";
-import Header from "./components/Headers/Header";
-// import Shop from "./components/Shop/Shop";
-// import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-// import Review from "./components/Review/Review";
-// import Inventory from "./components/Inventory/Inventory";
-// import NotFound from "./components/NotFound/NotFound";
-// import ProductDetail from "./components/ProductDetail/ProductDetail";
-// import Login from "./components/Login/Login";
-// import { AuthContextProvider, PrivateRoute } from "./components/Login/useAuth";
-// import Shipment from "./components/Shipment/Shipment";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import './App.css';
+import About from './components/About/About';
+import Main from './layouts/Main';
+import Shop from './components/Shop/Shop';
+import Orders from './components/Orders/Orders';
+import Inventory from './components/Inventory/Inventory';
+import { productsAndCartLoader } from './loaders/productsAndCartLoader';
+import Login from './components/Login/Login';
+import SignUp from './components/SignUp/SignUp';
+import Shipping from './components/Shipping/Shipping';
+import PrivateRoute from './routes/PrivateRoute';
 
-function App(props) {
+
+function App() {
+  const router = createBrowserRouter([
+    {
+      path:'/',
+      element: <Main></Main>,
+      children: [
+        {
+          path: '/',
+          element: <Shop></Shop>
+        },
+        {
+          path:'orders',
+          loader: productsAndCartLoader,
+          element: <Orders></Orders>
+        },
+        {
+          path: 'inventory',
+          element: <PrivateRoute><Inventory></Inventory></PrivateRoute>
+        },
+        {
+          path: 'shipping',
+          element: <PrivateRoute><Shipping></Shipping></PrivateRoute>
+        },
+        {
+          path:'about',
+          element:<About></About>
+        },
+        {
+          path: 'login',
+          element: <Login></Login>
+        },
+        {
+          path: 'signup',
+          element: <SignUp></SignUp>
+        }
+      ]
+    },
+    
+  ])
   return (
     <div>
-      <Header></Header>
-      {/* <AuthContextProvider>
-        <Router>
-          <Switch>
-            <Route path="/shop">
-              <Shop></Shop>
-            </Route>
-            <Route path="/review">
-              <Review></Review>
-            </Route>
-            <Route path="/inventory">
-              <Inventory></Inventory>
-            </Route>
-            <Route exact path="/">
-              <Shop></Shop>
-            </Route>
-            <Route path="/product/:productKey">
-              <ProductDetail></ProductDetail>
-            </Route>
-            <Route path="/login">
-              <Login></Login>
-            </Route>
-            <PrivateRoute path="/shipment">
-              <Shipment></Shipment>
-            </PrivateRoute>
-            <Route path="*">
-              <NotFound></NotFound>
-            </Route>
-          </Switch>
-        </Router>
-      </AuthContextProvider> */}
+      <RouterProvider router={router}></RouterProvider>
     </div>
   );
 }
